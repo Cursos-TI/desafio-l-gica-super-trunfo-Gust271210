@@ -1,43 +1,71 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-// Desafio Super Trunfo - Países
-// Tema 2 - Comparação das Cartas
-// Este código inicial serve como base para o desenvolvimento do sistema de comparação de cartas de cidades. 
-// Siga os comentários para implementar cada parte do desafio.
+#define QTD_CARTAS 2
+
+struct Carta {
+    char estado[50];
+    char codcarta[50];
+    char nomecidade[50];
+    int populacao;
+    float area;
+    float densidadepop;
+    float pib;
+    float pibpercap;
+    int numeroponto;
+};
 
 int main() {
-    // Definição das variáveis para armazenar as propriedades das cidades
-    // Você pode utilizar o código do primeiro desafio
+    struct Carta cartas[QTD_CARTAS];
+    char entrada[100]; // buffer para leitura com fgets
 
-    
-    // Cadastro das Cartas:
-    // Implemente a lógica para solicitar ao usuário que insira os dados das cidades
-    // utilizando a função scanf para capturar as entradas.
-    // utilize o código do primeiro desafio
+    for (int i = 0; i < QTD_CARTAS; i++) {
+        printf("\n--- Preenchendo dados da carta %d ---\n", i + 1);
 
-    // Exemplo:
-    // printf("Digite o código da cidade: ");
-    // scanf("%s", codigo);
-    // 
-    // (Repita para cada propriedade)
+        printf("Digite o estado:\n");
+        fgets(cartas[i].estado, sizeof(cartas[i].estado), stdin);
+        cartas[i].estado[strcspn(cartas[i].estado, "\n")] = '\0';
 
-    // Comparação de Cartas:
-    // Desenvolva a lógica de comparação entre duas cartas.
-    // Utilize estruturas de decisão como if, if-else para comparar atributos como população, área, PIB, etc.
+        printf("Digite o código:\n");
+        fgets(cartas[i].codcarta, sizeof(cartas[i].codcarta), stdin);
+        cartas[i].codcarta[strcspn(cartas[i].codcarta, "\n")] = '\0';
 
-    // Exemplo:
-    // if (populacaoA > populacaoB) {
-    //     printf("Cidade 1 tem maior população.\n");
-    // } else {
-    //     printf("Cidade 2 tem maior população.\n");
-    // }
+        printf("Digite o nome da cidade:\n");
+        fgets(cartas[i].nomecidade, sizeof(cartas[i].nomecidade), stdin);
+        cartas[i].nomecidade[strcspn(cartas[i].nomecidade, "\n")] = '\0';
 
-    // Exibição dos Resultados:
-    // Após realizar as comparações, exiba os resultados para o usuário.
-    // Certifique-se de que o sistema mostre claramente qual carta venceu e com base em qual atributo.
+        printf("Digite a população:\n");
+        fgets(entrada, sizeof(entrada), stdin);
+        sscanf(entrada, "%d", &cartas[i].populacao);
 
-    // Exemplo:
-    // printf("A cidade vencedora é: %s\n", cidadeVencedora);
+        printf("Digite a área em km²:\n");
+        fgets(entrada, sizeof(entrada), stdin);
+        sscanf(entrada, "%f", &cartas[i].area);
+
+        printf("Digite o PIB:\n");
+        fgets(entrada, sizeof(entrada), stdin);
+        sscanf(entrada, "%f", &cartas[i].pib);
+
+        printf("Digite o número de pontos turísticos:\n");
+        fgets(entrada, sizeof(entrada), stdin);
+        sscanf(entrada, "%d", &cartas[i].numeroponto);
+
+        if (cartas[i].populacao != 0 && cartas[i].area != 0) {
+            cartas[i].densidadepop = cartas[i].populacao / cartas[i].area;
+            cartas[i].pibpercap = cartas[i].pib / cartas[i].populacao;
+        }
+    }
+
+    // Comparação
+    printf("\n===== COMPARAÇÃO DE PIB =====\n");
+    if (cartas[0].pib > cartas[1].pib) {
+        printf("Carta vencedora: %s (PIB: %.2f)\n", cartas[0].nomecidade, cartas[0].pib);
+    } else if (cartas[1].pib > cartas[0].pib) {
+        printf("Carta vencedora: %s (PIB: %.2f)\n", cartas[1].nomecidade, cartas[1].pib);
+    } else {
+        printf("Empate entre as cidades. PIB: %.2f\n", cartas[0].pib);
+    }
 
     return 0;
 }
