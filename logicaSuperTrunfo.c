@@ -9,12 +9,37 @@ struct Carta {
     char codcarta[50];
     char nomecidade[50];
     int populacao;
-    float area;
+    int area;
     float densidadepop;
-    float pib;
-    float pibpercap;
+    int pib;
+    int pibpercap;
     int numeroponto;
 };
+
+// Função para formatar número com ponto como separador de milhar
+void formatar_milhar(int valor, char *saida) {
+    char buffer[50];
+    sprintf(buffer, "%d", valor);  // Converte o número para string
+
+    int len = strlen(buffer);
+    int pontoCount = (len - 1) / 3;
+    int novaLen = len + pontoCount;
+
+    saida[novaLen] = '\0';
+
+    int i = len - 1;
+    int j = novaLen - 1;
+    int contador = 0;
+
+    while (i >= 0) {
+        if (contador == 3) {
+            saida[j--] = '.';
+            contador = 0;
+        }
+        saida[j--] = buffer[i--];
+        contador++;
+    }
+}
 
 int main() {
     struct Carta cartas[QTD_CARTAS];
@@ -46,12 +71,12 @@ int main() {
         // Lendo área
         printf("Digite a área em km²:\n");
         fgets(entrada, sizeof(entrada), stdin);
-        sscanf(entrada, "%f", &cartas[i].area);
+        sscanf(entrada, "%d", &cartas[i].area);
 
         // Lendo PIB
         printf("Digite o PIB:\n");
         fgets(entrada, sizeof(entrada), stdin);
-        sscanf(entrada, "%f", &cartas[i].pib);
+        sscanf(entrada, "%d", &cartas[i].pib);
 
         // Lendo número de pontos turísticos
         printf("Digite o número de pontos turísticos:\n");
@@ -60,37 +85,40 @@ int main() {
 
         // Cálculos de densidade populacional e PIB per capita
         if (cartas[i].populacao != 0 && cartas[i].area != 0) {
-            cartas[i].densidadepop = cartas[i].populacao / cartas[i].area; // densidade = populacao / area
-            cartas[i].pibpercap = cartas[i].pib / cartas[i].populacao;    // pib per capita = pib / populacao
+            cartas[i].densidadepop = cartas[i].populacao / cartas[i].area;
+            cartas[i].pibpercap = cartas[i].pib / cartas[i].populacao;
         } else {
             cartas[i].densidadepop = 0;
             cartas[i].pibpercap = 0;
         }
     }
 
-    // Comparação
+    // Comparação por PIB (pode trocar para outro atributo se desejar)
     printf("\n===== COMPARAÇÃO DE PIB =====\n");
     if (cartas[0].pib > cartas[1].pib) {
-        printf("Carta vencedora: %s (PIB: %.2f)\n", cartas[0].nomecidade, cartas[0].pib);
+        printf("Carta vencedora: %s (PIB: %d)\n", cartas[0].nomecidade, cartas[0].pib);
     } else if (cartas[1].pib > cartas[0].pib) {
-        printf("Carta vencedora: %s (PIB: %.2f)\n", cartas[1].nomecidade, cartas[1].pib);
+        printf("Carta vencedora: %s (PIB: %d)\n", cartas[1].nomecidade, cartas[1].pib);
     } else {
-        printf("Empate entre as cidades. PIB: %.2f\n", cartas[0].pib);
+        printf("Empate entre as cidades. PIB: %d\n", cartas[0].pib);
     }
 
     // Exibindo os dados das cartas
     printf("\n===== CARTAS DIGITADAS =====\n");
     for (int i = 0; i < QTD_CARTAS; i++) {
+        char populacaoFormatada[50];
+        formatar_milhar(cartas[i].populacao, populacaoFormatada);
+
         printf("\n--- Carta %d ---\n", i + 1);
         printf("Estado: %s\n", cartas[i].estado);
         printf("Código da carta: %s\n", cartas[i].codcarta);
         printf("Nome da cidade: %s\n", cartas[i].nomecidade);
-        printf("População: %d\n", cartas[i].populacao);
-        printf("Área: %.2f km²\n", cartas[i].area);
-        printf("PIB: %.2f\n", cartas[i].pib);
+        printf("População: %s\n", populacaoFormatada);
+        printf("Área: %d km²\n", cartas[i].area);
+        printf("PIB: %d\n", cartas[i].pib);
         printf("Número de pontos turísticos: %d\n", cartas[i].numeroponto);
-        printf("Densidade Populacional: %.2f hab/km²\n", cartas[i].densidadepop);
-        printf("PIB per capita: %.2f\n", cartas[i].pibpercap);
+        printf("Densidade Populacional: %d hab/km²\n", cartas[i].densidadepop);
+        printf("PIB per capita: %d\n", cartas[i].pibpercap);
     }
 
     return 0;
